@@ -1,3 +1,5 @@
+
+
 body {
     /* font: 20px Montserrat, sans-serif; */
     line-height: 1.8;
@@ -45,9 +47,13 @@ p {font-size: 16px;}
   text-align: center;
   flex: 1 0 0px;
   height: auto;
-  border-style: solid;
-  border-width: 1px;
+  /* border-style: solid;
+  border-width: 1px; */
   color: black;
+}
+
+.flex-item:hover {
+  font-weight: bolder;
 }
 
 .heading1 {
@@ -95,14 +101,60 @@ p {font-size: 16px;}
     padding-bottom: 200;
     }
 
-.week {
-  background: #F2F1EF;
-  font: 10px Courier, new;
-  margin: 5px;
-  font-weight: bold;
-  font-size: 1.5em;
-  text-align: center;
-  flex: 1 0 0px;
-  height: auto;
-  color: white;
+/* Credit for below: https://codepen.io/devilishalchemist/pen/ZYLZay */
+.underline--magical {
+  font-size: 20px;
+  color: #584E4A;;
+  position: relative;
+  /* text-transform: uppercase; */
+  text-decoration: none;
+  padding-bottom: 8px;
+}
+
+.underline--magical::before{
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 0; right: 0;
+  height: 2px;
+  background-color: #F37272;
+  opacity: 0;
+  transform: translateY(- .8px);
+  transition: transform 0s cubic-bezier(0.175, 0.885, 0.320, 1.275), opacity 0s;
+}
+
+.underline--magical:after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 0; right: 0;
+  height: 2px;
+  background-color: #F37272;
+  opacity: 0;
+  transform: translateY(.8px/2);
+  transition: transform .25s cubic-bezier(0.175, 0.885, 0.320, 1.275), opacity .2s;
+}
+
+.underline--magical:hover::before{
+  opacity: 1;
+  transform: translateY(0);
+  transition: transform .25s cubic-bezier(0.175, 0.885, 0.320, 1.275), opacity .2s;
+}
+
+.underline--magical:hover::after{
+  opacity: 1;
+  transform: translateY(0);
+  transition: transform 0s .25s cubic-bezier(0.175, 0.885, 0.320, 1.275), opacity 0s .2s;
+}
+
+.underline--magical:focus::before{
+  opacity: 1;
+  transform: translateY(0);
+  transition: transform .25s cubic-bezier(0.175, 0.885, 0.320, 1.275), opacity .2s;
+}
+
+.underline--magical:focus::after{
+  opacity: 1;
+  transform: translateY(0);
+  transition: transform 0s .25s cubic-bezier(0.175, 0.885, 0.320, 1.275), opacity 0s .2s;
 }
