@@ -1,13 +1,108 @@
 body {
-    font: 20px Montserrat, sans-serif;
+    /* font: 20px Montserrat, sans-serif; */
     line-height: 1.8;
     color: black;
+    background-color: #F2F1EF;
   }
 
 p {font-size: 16px;}
 .margin {margin-bottom: 15px;}
 
 .container-fluid {
-  padding: 30px;
+  padding-top: 70px;
+  padding-left: 120px;
+  padding-right: 120px;
   padding-bottom: 70px;
+}
+
+.flex-container {
+  padding: 10px;
+  margin: 200;
+  list-style: none;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-flow: row;
+  justify-content: space-around;
+  height: 250px;
+  line-height:30px;
+}
+
+.flex-item {
+  background:#F2F1EF;
+  border-radius: 20px;
+  padding: 200;
+  margin: 5px;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 17px;
+  font-style: normal;
+  font-weight: 300;
+  letter-spacing: normal;
+  line-height: 31.875px;
+  text-transform: none;
+  text-align: center;
+  flex: 1 0 0px;
+  height: auto;
+  border-style: solid;
+  border-width: 1px;
+  color: black;
+}
+
+.heading1 {
+  background: #F2F1EF;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 25.5px;
+  font-style: normal;
+  font-weight: normal;
+  letter-spacing: normal;
+  line-height: normal;
+  text-transform: uppercase;
+  margin: 10px;
+  padding: 200;
+  font-size: 3.5em;
+  text-align: center;
+  height: auto;
+  color:black;
+}
+
+.content-1 {
+  padding-bottom: 50px;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 17px;
+  font-style: normal;
+  font-weight: 300;
+  letter-spacing: normal;
+  line-height: 31.875px;
+  text-transform: none;
+  color: #000000;
+  text-align: center;
+  padding-bottom: 200;
+  }
+
+  .content-2 {
+    padding-bottom: 50px;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 17px;
+    font-style: normal;
+    font-weight: 300;
+    letter-spacing: normal;
+    line-height: 31.875px;
+    text-transform: none;
+    color: #000000;
+    text-align: left;
+    padding-bottom: 200;
+    }
+
+.week {
+  background: #F2F1EF;
+  font: 10px Courier, new;
+  margin: 5px;
+  font-weight: bold;
+  font-size: 1.5em;
+  text-align: center;
+  flex: 1 0 0px;
+  height: auto;
+  color: white;
 }
