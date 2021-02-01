@@ -4,7 +4,7 @@ body {
     /* font: 20px Montserrat, sans-serif; */
     line-height: 1.8;
     color: black;
-    background-color: #F2F1EF;
+    background-color:#e6e6e6;
   }
 
 p {font-size: 16px;}
@@ -18,8 +18,8 @@ p {font-size: 16px;}
 }
 
 .flex-container {
-  padding: 10px;
-  margin: 200;
+  padding-bottom: 100px;
+  margin: 50;
   list-style: none;
   display: -webkit-box;
   display: -moz-box;
@@ -28,36 +28,34 @@ p {font-size: 16px;}
   display: flex;
   -webkit-flex-flow: row;
   justify-content: space-around;
-  height: 250px;
+  height: 360px;
   line-height:30px;
 }
 
 .flex-item {
-  background:#F2F1EF;
-  border-radius: 20px;
-  padding: 200;
+  background:#e6e6e6;
+  border-radius: 5px;
+  padding: 50;
   margin: 5px;
   font-family: 'Roboto Mono', monospace;
   font-size: 17px;
   font-style: normal;
-  font-weight: 300;
+  font-weight: normal;
   letter-spacing: normal;
   line-height: 31.875px;
   text-transform: none;
   text-align: center;
   flex: 1 0 0px;
-  height: auto;
+  height: 350px;
   /* border-style: solid;
   border-width: 1px; */
   color: black;
-}
-
-.flex-item:hover {
-  font-weight: bolder;
+  overflow-y: hidden;
+  position: relative;
+  width: 100%;
 }
 
 .heading1 {
-  background: #F2F1EF;
   font-family: 'Roboto Mono', monospace;
   font-size: 25.5px;
   font-style: normal;
@@ -157,4 +155,66 @@ p {font-size: 16px;}
   opacity: 1;
   transform: translateY(0);
   transition: transform 0s .25s cubic-bezier(0.175, 0.885, 0.320, 1.275), opacity 0s .2s;
+}
+
+
+/* Source: https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_image_overlay_fade */
+.container {
+  position: relative;
+  width: 100%;
+}
+
+.image {
+  /* display: ; */
+  width: auto;
+  height: 60%;
+}
+
+.image-done {
+  /* display: ; */
+  width: auto;
+  height: 100%;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100%s;
+  width: 100%;
+  opacity: 0;
+  transition: .5s ease;
+  background-color: #e6e6e6;
+}
+
+.flex-item:hover .overlay {
+  opacity: 0.7;
+}
+
+.text {
+  color: black;
+  font-size: 20px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.columnleft {
+  float: left;
+  width: 30%;
+  padding: 10px;
+  height: 300px; /* Should be removed. Only for demonstration */
+}
+
+.columnright {
+  float: left;
+  width: 70%;
+  padding: 10px;
+  height: 300px; /* Should be removed. Only for demonstration */
 }
