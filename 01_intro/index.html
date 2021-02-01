@@ -26,28 +26,28 @@
     provide structural support, grasp an object, etc. all via the same piece of hardware. It is unlikely that every task
     could be achievable by one structure, but it might be possible to encompass a family of similar tasks or tasks that
     could occur where the robot is set to deploy.
-
+    <br>
     Depending on the parts that I have available and knowledge/time, my plan is to start simple. I have varying approaches in mind
     and will start by discussing an approach that is very similar to origami and is probably the least "smart" and mathematically 
     challenging. I would like to develop a self-folding piece of paper that can create various 3D structures through its own programming.
     I would like to start by developing the material, which will be challenging since along a certain axis, it might need to be able to
     both fold and exert force. This can be imagined as one trying to fold a square piece of paper along its diagonals.
-
+    <br>
     This project would already represent an extension upon previous work, which usually relied on a "paper" material with the 3D 
     structure already "baked in". Heading the material would cause the 3D structure to appear. Thus, finding the right material to 
     accomplish my project will likely be the most challenging portion.
-
+    <br>
     With certain degrees of freedom established on the material, I would like to program one origami structure into it, a sequence of 
     folds that it will reproduce on its own to create the 3D structure. This will be complex not only due the many possible combinations
     of forces necessary, but also because the origami will likely need to fold itself while sitting on a flat surface. Finding a suitable
     origami design to create this proof-of-concept project will likely be necessary. 
-
+    <br>
     This project will also leave me open to create extensions in the future to train the material in simulation. I imagine feeding in 
     an approximate 3D outline and asking the robot to "Fold yourself such that you maximize the interior volume you cover while 
     minimizing the exterior volume covered." Though this hypothesis is untested, I imagine with a suitable threshold and many training
     runs that this specification will cause the paper to generally approximate the input structure. Ensuring suitable structural soundness
     would be another concern to be addressed as well.
-  
+    <br>
     Another possible approach for my final project might rely mostly on magnetic force. My inspiration comes from force-directed
     graphs that are commonly created as Javascript visuals, where the force exerted by each element allows the resulting graph to 
     exhibit some overall structure. If given a set of magnetic pieces, each with the ability to exert pull in arbitrary directions, 
