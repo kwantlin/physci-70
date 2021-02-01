@@ -225,10 +225,11 @@ p {font-size: 16px;}
 /* Source: https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_responsive_header */
 .header {
   overflow: hidden;
-  background-color: #e6e6e6;
+  background-color: #dddbdb;
   padding-left: 100px;
   padding-right: 100px;
   padding-top: 10px;
+  padding-bottom: 5px;
   font-family: 'Roboto Mono', monospace;
   position: sticky;
   top: 0;
@@ -248,7 +249,7 @@ p {font-size: 16px;}
 
 .header a.logo {
   font-size: 25px;
-  font-weight: bold;
+  text-transform: uppercase;
 }
 
 .header a:hover {
