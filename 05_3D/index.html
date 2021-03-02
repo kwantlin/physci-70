@@ -20,7 +20,135 @@
   <h3 class="heading1">Week 5: 3D Design & Printing </h3> <br> 
   <div class="row content-2">
     
-   
+  This week we worked with 3D Design and Printing, extending previous experience with Fusion 360 to creating
+  items for printing as well as learning to 3D scan and slice. 
+  <br><br>
+  To start with the 3D modeling portion of the assignment, I've been very into the game Genshin Impact lately,
+  and during a recent in-game event, an item called the Xiao Lantern was released. Due to the rounded contours 
+  and patterns of the structure, this would likely be quite difficult to achieve with subtractive methods, especially
+  in a cost-effective way since much material would need to be hollowed/shaped away. 
+  <br><br>
+  <img src="./Xiao_Lantern.png" style="height:700px; width:auto; align-content:centerd; display: block;margin-left: auto; margin-right: auto;" class="img-responsive margin"  alt="Sim circuit">
+  <br><br>
+  Looking at the above image, I saw that the most challenging portion of the lantern would be to make the 4 leg-like 
+  structures near the top. After searching for videos achieving this design, I saw that it could actually 
+  be quite easily achieved by creating a pattern in Fusion 360. Here's the video of my inspiration. 
+  <br><br>
+  <iframe width="760" height="515" src="https://www.youtube.com/embed/SdHtWdHOn0A" style="align-content:centerd; display: block;margin-left: auto; margin-right: auto;" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  <br><br>
+  I also noted that my previous attempts to geometrically achieve 
+  a shell with extrusion cuts could have been avoided with the simple "Shell" command. From the videos I watched, like the 
+  one below, I liked the idea of adding more variety to the lantern body by creating various patterns on the 
+  revolving sketch. After trying a few ideas out, I got the below result.
+  <br><br>
+  <img src="./fusion-thin.png" style="height:700px; width:auto; align-content:centerd; display: block;margin-left: auto; margin-right: auto;" class="img-responsive margin"  alt="Sim circuit">
+  <br><br>
+  However, though this design was simple enough for printing, as I looked at the sliced model in PrusaSlicer, I 
+  remembered my few experiences with 3D printing filament. With such thin weaving pieces, I imagined the likely 
+  result would have a lot of "spider-webbing" of excess filament, and the thin pieces might not even remain 
+  structurally sound throughout printing. 
+  <br><br>
+  <img src="./prusa-thin.png" style="height:700px; width:auto; align-content:centerd; display: block;margin-left: auto; margin-right: auto;" class="img-responsive margin"  alt="Sim circuit">
+  <br><br>
+  
+  To avoid this result, I went back to Fusion, and tried to balance 
+  increasing the width of the weaving bits as well as just the thickness of the shell. This would lead to 
+  a lantern pattern with sufficient gaps for light and increase structural integrity.
+  <br><br>
+  <img src="./fusion-thick.png" style="height:700px; width:auto; align-content:centerd; display: block;margin-left: auto; margin-right: auto;" class="img-responsive margin"  alt="Sim circuit">
+  <br><br>
+
+  Taking this final design to Prusa, I got a much better result, with still around an hour of print time. 
+  <br><br>
+  <img src="./prusa-thick.png" style="height:700px; width:auto; align-content:centerd; display: block;margin-left: auto; margin-right: auto;" class="img-responsive margin"  alt="Sim circuit">
+  <br><br>
+  <span class="underline--magical" onclick="location.href='./lantern.stl';" style="cursor: pointer" > Click to download my Lantern STL file</span>
+  <br><br>
+  <span class="underline--magical" onclick="location.href='./lantern.gcode';" style="cursor: pointer" > Click to download my Lantern GCode file</span>
+  <br><br>
+  Next, I tried several apps for scanning with my phone. I started with Qlone, since it was free to download. The
+  process showed me how images needed to be collected. Qlone showed a dome that your camera would need to sweep through,
+  and to improve accuracy, they ask that you first print a base sheet for reference. I found the UI on this app to be difficult,
+  since especially for the lower-angle photos, a corner of the base sheet might disappear for a slightly larger item like 
+  this multimeter, resulting in difficulty getting clean images. 
+  <br><br>
+  <img src="./qlone-dome.png" style="height:700px; width:auto; align-content:centerd; display: block;margin-left: auto; margin-right: auto;" class="img-responsive margin"  alt="Sim circuit">
+  <br><br>
+  The resulting scan was also not the best, since it seemed to have a hard time judging height, as shown below.
+  Only after I used the "Flatten" feature did it yield a reasonable result.
+  It also cost $20 to get the model files, so I decided to look for alternatives. 
+  <br><br>
+  <img src="./qlone-mm.png" style="height:700px; width:auto; align-content:centerd; display: block;margin-left: auto; margin-right: auto;" class="img-responsive margin"  alt="Sim circuit">
+  <br><br>
+  <img src="./qlone-flat.png" style="height:700px; width:auto; align-content:centerd; display: block;margin-left: auto; margin-right: auto;" class="img-responsive margin"  alt="Sim circuit">
+  <br><br>
+  Nathan suggested Trnio as another iPhone option, only costing $5, so I gave this a shot. It works using both 
+  photos and Apple's AR Kit. The UI for the AR Kit is shown below, which slowly builds a point cloud of the object. 
+  However, I found that the surroundings of the object in my setting were too easily captured, so I switched to just 
+  using images. 
+  <br><br>
+  <img src="./trnio-arkit.PNG" style="height:700px; width:auto; align-content:centerd; display: block;margin-left: auto; margin-right: auto;" class="img-responsive margin"  alt="Sim circuit">
+  <br><br>
+  In photo-mode, Trnio similarly seems to want a dome-like sweep around the object. It took several tries, each 
+  time requiring tens of photos, to adapt to taking good pictures, pausing at the right moments, and moving very 
+  slowly while keeping out of the way of my light source. 
+  <br><br>
+  <img src="./trnio-obj.PNG" style="height:700px; width:auto; align-content:centerd; display: block;margin-left: auto; margin-right: auto;" class="img-responsive margin"  alt="Sim circuit">
+  <br><br>
+  My first scan of my clock revealed an interesting optical-illustion phenomenon that would occur if insufficient 
+  diversity of images are taken: the front and back of the object might become interchangeable, resulting in weird 
+  optical effects as you rotated the resulting 3D object. From looking at other scans that people did with this 
+  app, it seems to be a common issue.
+  <br><br>
+  <img src="./trnio-clock.PNG" style="height:700px; width:auto; align-content:centerd; display: block;margin-left: auto; margin-right: auto;" class="img-responsive margin"  alt="Sim circuit">
+  <br><br>
+
+  Adapting to these scanning errors, I did a final set of scans using a Beanie stuffed toy, ensuring that I took 
+  images of enough angles, especially the back. Though the scan incorporated some of the surface on which my 
+  object rested, this seemed like a common result. The overall scan was quite good!
+  <br><br>
+  <img src="./trnio-beanie.PNG" style="height:700px; width:auto; align-content:centerd; display: block;margin-left: auto; margin-right: auto;" class="img-responsive margin"  alt="Sim circuit">
+  <br><br>
+  <img src="./trnio-beanie2.PNG" style="height:700px; width:auto; align-content:centerd; display: block;margin-left: auto; margin-right: auto;" class="img-responsive margin"  alt="Sim circuit">
+  <br><br>
+  I exported the .obj file to Fusion, and then transitioned it to PrusaSlicer as an .STL file. There, I found it easiest 
+  to do modifications like removing the pieces of the surface material by performing a cut. This minimized the presence of excess 
+  material from Trnio's scan. 
+  <br><br>
+  <img src="./prusa-bear.png" style="height:700px; width:auto; align-content:centerd; display: block;margin-left: auto; margin-right: auto;" class="img-responsive margin"  alt="Sim circuit">
+  <br><br>
+  
+  For 3D printing for my final project, I started by looking at previous work on modular robotics. Here's 
+  a video I found describing MIT's M-cube. 
+  <br><br>
+  <iframe width="760" height="515" src="https://www.youtube.com/embed/hI5UDKaWJOo" style="align-content:centerd; display: block;margin-left: auto; margin-right: auto;" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  <br><br>
+  Here's another on M-TRAN 3.
+  <br><br>
+  <iframe width="760" height="515" src="  https://www.youtube.com/embed/4oSavAHf0dg" style="align-content:centerd; display: block;margin-left: auto; margin-right: auto;" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  <br><br>
+  The common thread between these videos - and an issue for me - is that they rely on decentralized control, which 
+  makes sense for the application. However, that means a lot of specialized hardware is necessary, as well as wiring, 
+  much of which might not be possible without soldering. Even if I were to somehow attempt wiring together a lot 
+  of pieces, it would not be simple to control as most past work relied on a combination of magnets and motor actuators. 
+  <br><br>
+  Therefore, rather than attempting to 3D model my initial idea, I focused on scaling down. I would like to 
+  incorporate some type of TinyML component if possible, and if I want some sort of transformable structure, I know that 
+  I need something to do RL in. After looking into some options, I found that Unity's ML Agents software would work well 
+  since it allows you to customize everything from the build of your agent to constraints on actions, rewards, etc. Here's 
+  an example showing an arm that is being trained to move to target locations.
+  <br><br>
+  <img src="./unity-ml-agents.png" style="height:700px; width:auto; align-content:centerd; display: block;margin-left: auto; margin-right: auto;" class="img-responsive margin"  alt="Sim circuit">
+  <br><br>
+  If I were to build a structure that was completely wired togethered in a closed loop, with joint connecting 
+  rigid pieces and motors at each joint (or perhaps situated at the center), you can imagine that this structure, even
+  if laid flat for just 2D transformations, could take on a variety of shapes. If done as a wall hanging, you 
+  could imagine sending it a shape you'd like it to take on, and it would move its joints into the right orientation
+  (and perhaps in the right order) to achieve that shape. Whether the ML inference is done on the MCU that controls it 
+  or if that's done on a separate device and final motion commands are transmitted over Wifi will need to be determined later. 
+  For now, I would need to test the feasibility of doing this all in Unity to see if the transformations and structure can 
+  be adequately simulated, as I will need to build the structure based on what I can train for. 
+
   </div>
 
  
