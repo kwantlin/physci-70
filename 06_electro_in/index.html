@@ -20,6 +20,62 @@
   <h3 class="heading1">Week 6: Electronic Input Devices </h3> <br> 
   <div class="row content-2">
     
+  This week we looked at various types of electronic input devices/sensors. In my homework, I decided, in 
+  addition to the capacitive sensing, that I would work with the piezoelectric voltage generating sensor 
+  since I'd previously worked with phototransistors in a voltage-divider circuit. 
+
+  <br><br>
+  For the capacitive sensing portion, I focused on creating a force sensor via a parallel plate capacitor. 
+
+  <br><br>
+  <img src="./mousepadcap.png" style="height:700px; width:auto; align-content:centerd; display: block;margin-left: auto; margin-right: auto;" class="img-responsive margin"  alt="Sim circuit">
+
+  <br><br>
+  I tested the parallel plates with just air between them and then with a mousepad. 
+  I noticed that with the mousepad in between the plates, the voltage transferred between them was significantly reduced 
+  even when maximum force is applied. After doing some more research online on what the math was behind this result,
+  I found a very helpful
+  <span class="underline--magical" onclick="location.href='https://www.quora.com/How-can-I-connect-photodiodes-to-have-more-voltage-Is-it-connected-in-series-or-parallel';" style="cursor: pointer" >
+    website
+  </span>
+  explaining capacitors and dielectrics in even more detail and also talked about dielectric constants of various materials.
+  The fact that the max voltage transfer with the mousepad was around 450 rather than 1023 is because the mousepad's material 
+  has a higher dielectric strength than air, meaning that it can be subjected to much higher voltage 
+  before it begins to break down and conduct. Thus, certain materials with a higher constant can be used to tune a force sensor within
+  a smaller range of values. 
+
+  <br><br>
+  Next, I decided to use the piezo sensor to create a tap metronome. 
+  
+  <br><br>
+  Here is the circuitry:
+
+  <br><br>
+  <img src="./piezocircuit.png" style="height:700px; width:auto; align-content:centerd; display: block;margin-left: auto; margin-right: auto;" class="img-responsive margin"  alt="Sim circuit">
+
+
+  <br><br>
+  By identifying the voltage produced at a suitable peak (anything above 80/1023), I could then 
+  identify the timings between peaks and use that to estimate the beats per minute (BPM) that the force is 
+  coming in at. 
+  
+  <br><br>
+  Here is a graph of the force coming in over the serial plotter:
+  
+  <br><br>
+  <img src="./piezoreading.png" style="height:700px; width:auto; align-content:centerd; display: block;margin-left: auto; margin-right: auto;" class="img-responsive margin"  alt="Sim circuit">
+  
+  <br><br>
+  Since I realized from experience and testing that I didn't want this value to range too widely, I 
+  took an average over the last 3 readings. By comparing it to an online tap metronome, I saw that 
+  I was getting quite consistent results, outside of some noisy data. 
+
+  <br><br>
+  Here is a video of the final result. 
+  <iframe width="760" height="515" src="https://www.youtube.com/embed/C_rLggRi2F4" style="align-content:centerd; display: block;margin-left: auto; margin-right: auto;" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+
+
   </div>
 
  
