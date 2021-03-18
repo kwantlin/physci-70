@@ -42,7 +42,8 @@
   The fact that the max voltage transfer with the mousepad was around 450 rather than 1023 is because the mousepad's material 
   has a higher dielectric strength than air, meaning that it can be subjected to much higher voltage 
   before it begins to break down and conduct. Thus, certain materials with a higher constant can be used to tune a force sensor within
-  a smaller range of values. 
+  a smaller range of values. I also tested this with a piece of paper in between to verify that as expected, the dielectric strength of paper was less than 
+  that of the mousepad but more than that of air, since the readings were around ~800.
 
   <br><br>
   Next, I decided to use the piezo sensor to create a tap metronome. 
@@ -71,6 +72,47 @@
   I was getting quite consistent results, outside of some noisy data. 
 
   <br><br>
+
+  <pre><code class="language-arduino">
+ 
+  int analogPin = 0;
+  unsigned long myTime;
+  int intervals[5]={0,0,0,0,0};
+  
+  void setup(void) {
+    Serial.begin(9600);   // We'll send debugging information via the Serial monitor
+    myTime = millis();
+  //  pinMode(LEDpin, OUTPUT);
+  }
+  
+  void loop(void) {
+    int reading = analogRead(analogPin);
+  //  Serial.print("Analog reading = ");
+  //  Serial.println(reading);
+    if (reading > 100){
+      int curTime = millis();
+      int timeDiff = curTime - myTime;
+      myTime = curTime;
+      intervals[0] = intervals[1];
+      intervals[1] = intervals[2];
+      intervals[2] = timeDiff;
+      float avgTime = 0;
+      for(byte i = 0; i < 3; i++)
+      {
+        avgTime  = avgTime + intervals[0];
+      }
+      avgTime = avgTime / 3;
+  //    Serial.print("avgtime = ");
+  //    Serial.println(avgTime);
+      float bpm = 60000/avgTime;
+      Serial.print("BPM = ");
+      Serial.println(bpm);
+    }
+      
+  
+    delay(100);
+}
+    </code></pre>
   Here is a video of the final result. 
   <iframe width="760" height="515" src="https://www.youtube.com/embed/C_rLggRi2F4" style="align-content:centerd; display: block;margin-left: auto; margin-right: auto;" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
