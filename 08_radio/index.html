@@ -19,7 +19,101 @@
 <div class="container-fluid">
   <h3 class="heading1">Week 8: Radio Communication </h3> <br> 
   <div class="row content-2">
-   
+    This week we began our investigation of communication between devices. 
+    <br><br>
+    Starting in lab, I implemented the LED communication over WIFI example, as shown here:
+    <br><br>
+
+    <iframe width="760" height="515" src="https://www.youtube-nocookie.com/embed/WwbJokVwBsE" style="align-content:centerd; display: block;margin-left: auto; margin-right: auto;" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    <br><br>
+
+    I also did successfully run the ESP32-CAM example, but after attempting to recreate it later for video purposes, I miswired a connection, which led to some odd hissing.
+    Since then, I've had issues getting it to be recognized on my laptop's ports, but I will come back to this in future weeks.
+    <br><br>
+
+    Before I ran the Servo example, which required me to use the following package to interface with the motor using the Huzzah, I found I was having some 
+    issues getting the motor to work properly still. Since I couldn't disambiguate whether the source of the error was the transmitting or receiving device, I 
+    backpedalled to do a simple button and LED example. Here is the code I used.
+    <br><br>
+
+    Transmitting code:
+    <br><br>
+
+    <pre><code class="language-arduino">
+    const int out_pin = 7;
+    const int button_pin = 11;
+
+    void setup() {
+      pinMode(button_pin, INPUT_PULLUP);  //This is the button pin.
+      pinMode(out_pin, OUTPUT);         // pin 5 for digital Write
+
+      Serial.begin(9600);        //for the USB serial devices, this baud rate is meaningless - can be "0"
+    }
+
+    void loop() {
+      int buttonState = digitalRead(button_pin);
+      Serial.println(buttonState);
+      digitalWrite(out_pin, buttonState);
+      delay(10);
+      }
+    </code></pre>
+    <br><br>
+
+    Receiving code:
+    <br><br>
+
+    <pre><code class="language-arduino">
+
+    int led=13;
+
+    Servo myservo;  // create servo object to control a servo
+
+    void setup() {
+      pinMode(12, INPUT);   // pin 7 for digital read
+      pinMode(led,OUTPUT);
+    }
+
+    void loop() {
+      int readnum = digitalRead(12);
+      Serial.println(readnum);
+      if (readnum==0)
+    {
+      digitalWrite(led,HIGH);
+    }
+    else
+    {
+      digitalWrite(led,LOW);
+    }
+    }
+      </code></pre>
+      <br><br>
+
+    Here is the video demo:
+    <br><br>
+
+    <iframe width="760" height="515" src="https://www.youtube-nocookie.com/embed/qWqtkfJ_iB8" style="align-content:centerd; display: block;margin-left: auto; margin-right: auto;" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    <br><br>
+
+    Upon coming back to this work today to try to extend it to more complex devices or finally get the Servo working since I now knew I could rely on the information coming in on pin 12,
+    I was getting the following error:
+    <br><br>
+
+      <pre>
+        Warning: Could not auto-detect Flash size (FlashID=0xffffff, SizeID=0xff), defaulting to 4MB Compressed 8192 bytes to 47...
+      </pre>
+      <br><br>
+
+    This persisted for the Huzzah regardless of what sketch I tried to upload, including even the basic Blink sketch. Thank goodness I got my demo video from above on an earlier day!
+    <br><br>
+
+    I found some
+    <span class="underline--magical" onclick="location.href='https://github.com/espressif/esptool/issues/394'" style="cursor: pointer" >
+      blog posts 
+     </span>
+     about this issue, but no matter how many times I hit reset during upload, I saw no success. This is definitely a pressing issue that I will resolve soon hopefully.
+     <br><br>
+
+     However, I do know that I can get reliable wired communication over this Pin 12, so I imagine that once this Flash issue is resolved (perhaps a wiring issue), I will be able to extend it to variety of other devices.
   </div>
 
  
