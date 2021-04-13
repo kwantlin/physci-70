@@ -19,10 +19,89 @@
 <div class="container-fluid">
   <h3 class="heading1">Week 11: Computer Programming </h3> <br> 
   <div class="row content-2">
-    <span class="underline--magical" onclick="location.href='p5_demo/index.html';" style="cursor: pointer" >
-      P5 Demo
+    This week, we worked with sending data from the microcontroller to the computer and the various tools that can be used to 
+    visualize the results.
+    <br><br>
+    To start, I completed the PS70 tutorial on 
+    <span class="underline--magical" onclick="location.href='https://nathanmelenbrink.github.io/ps70/13_programming/webusb.html';" style="cursor: pointer" >
+      talking to the browser over USB
      </span>
-   
+     and the related tutorial on using p5. After getting this demo to work, I now had functioning code to connect 
+     my device and wanted to use something more complex like d3.js to visualize microcontroller data.
+     <br><br>
+     I thought a good application of an input device I hadn't used, the accelerometer, would be to visualize my step data.
+     I used 
+     <span class="underline--magical" onclick="location.href='https://github.com/Perseus14/Pedometer/blob/master/Pedometer.ino';" style="cursor: pointer" >
+      this tutorial 
+     </span> 
+     as well as 
+     <span class="underline--magical" onclick="location.href='https://github.com/Perseus14/Pedometer/blob/master/Pedometer.ino';" style="cursor: pointer" >
+      the PS70 class tutorial on accelerometers
+     </span> 
+     to understand how to set things up and to understand how steps are counted. However, I found that the pedometer repo didn't work right out of the box. It seemed to be too long an interval in the loop (15 samples)
+     and also seemed to detect too many steps. At first I thought it might be because I needed to consistently recalibrate, but realized 
+     it was because the code's loop over the sampling started at index 0, which resulted in an average being taken with 0. 
+     <br><br>
+     After fixing this, I also changed the step counter to update once the flag was set back to 0 (the end of the step), since this made more intuitive sense 
+     and also incorporated a break in this condition so that the loops would be more responsive. Lastly, I incorporated the code from the p5 web demo. 
+     Here is the 
+     <span class="underline--magical" onclick="location.href='pedometer_sketch.txt';" style="cursor: pointer" >
+      final result
+     </span>
+      for the .ino file.
+      <br><br>
+    I thought a line graph displaying cumulative steps taken over time would be simple and informative. I followed 
+    <span class="underline--magical" onclick="location.href='https://www.d3-graph-gallery.com/graph/line_basic.html';" style="cursor: pointer" >
+      this tutorial
+     </span>
+     but modified it to take in data as an array of objects. It was helpful that I've used d3v3 before, so googling a few syntax erros related to d3v4 and 
+     miscellaneous formatting was fairly simple. 
+     <br><br>
+     One issue I noted was that the d3.js files did not seem to populating the svg element. After extensive googling, I realized it was becuase I needed 
+     to place this JS files that I'd written at the bottom, right before the closing body tag, so it could see the id tags for the elements I was referencing. 
+     Many thanks to 
+     <span class="underline--magical" onclick="location.href='https://stackoverflow.com/questions/16823757/d3-selectelement-not-working-when-code-above-the-html-element';" style="cursor: pointer" >
+      this Stackoverflow post 
+     </span>
+     for helping me realize the issue.
+     <br><br>
+    I also needed to modify the time range on the x axis since I'd be demo-ing this over a few seconds. To understand how to capture date information from the system, I realized this would be easier to do on the 
+    Javascript side rather than sending it over serial, and would have virtually indistinguishable results.
+    I referenced 
+    <span class="underline--magical" onclick="location.href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date#';" style="cursor: pointer" >
+      this page on Javscript Date objects
+     </span>
+     and 
+     <span class="underline--magical" onclick="location.href='http://www.d3noob.org/2012/12/formatting-date-time-on-d3js-graph.html';" style="cursor: pointer" >
+      this post
+     </span>
+      describing grabbing the hour, minute and second information 
+      <br><br>
+    Here are the final files, which should coexist in a folder with each other to work:
+    <br><br>
+    <span class="underline--magical" onclick="location.href='pedometer_html.txt';" style="cursor: pointer" >
+      HTML file
+     </span>
+     <br><br>
+     <span class="underline--magical" onclick="location.href='pedometer_js.txt';" style="cursor: pointer" >
+      JS: pedometer visualization
+     </span>
+     <br><br>
+     <span class="underline--magical" onclick="location.href='serial.txt';" style="cursor: pointer" >
+      JS: serial 
+     </span>
+     <br><br>
+
+     You can engage with my demo here:
+     <br><br>
+    <span class="underline--magical" onclick="location.href='p5_demo/index.html';" style="cursor: pointer" >
+      Connect to demo!
+     </span>
+     <br><br>
+     Last but not least, here is my demo video for this week:
+     <br><br>
+     <iframe width="760" height="515" src="https://www.youtube-nocookie.com/embed/PULpw1-giRQ" style="align-content:centerd; display: block;margin-left: auto; margin-right: auto;" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+     <br><br>
   </div>
 
  

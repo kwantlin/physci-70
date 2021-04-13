@@ -8,7 +8,6 @@ function setup() {
 
     for (let i = 0; i < numPoints; i++ ) {
     	path[i] = new p5.Vector(0, 0, 0);
-        print(path[i])
     }
 
 }

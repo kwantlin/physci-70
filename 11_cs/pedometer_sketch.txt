@@ -1,0 +1,172 @@
+
+#include <Wire.h>
+#include <SPI.h>
+#include <Adafruit_LIS3DH.h>
+#include <Adafruit_Sensor.h>
+#include "Adafruit_TinyUSB.h"
+
+// Used for software SPI
+#define LIS3DH_CLK 13
+#define LIS3DH_MISO 12
+#define LIS3DH_MOSI 11
+// Used for hardware & software SPI
+#define LIS3DH_CS 10
+
+// software SPI
+Adafruit_LIS3DH lis = Adafruit_LIS3DH(LIS3DH_CS, LIS3DH_MOSI, LIS3DH_MISO, LIS3DH_CLK);
+// hardware SPI
+//Adafruit_LIS3DH lis = Adafruit_LIS3DH(LIS3DH_CS);
+// I2C
+//Adafruit_LIS3DH lis = Adafruit_LIS3DH();
+float threshold = 6;
+float xval[100] = {0};
+float yval[100] = {0};
+float zval[100] = {0};
+float xavg, yavg, zavg;
+int steps, flag = 0;
+
+// USB WebUSB object
+Adafruit_USBD_WebUSB usb_web;
+
+// Landing Page: scheme (0: http, 1: https), url
+WEBUSB_URL_DEF(landingPage, 1 /*https*/, "https://kwantlin.github.io/physci-70/11_cs/p5_demo/index.html");
+
+
+void setup(void) {
+  usb_web.setLandingPage(&landingPage);
+  usb_web.begin();
+
+  Serial.begin(115200);
+
+  // wait until device mounted
+  while ( !USBDevice.mounted() ) delay(1);
+
+  Serial.println("p5 WebUSB Serial example");
+  
+  while (!Serial) delay(10);     // will pause Zero, Leonardo, etc until serial console opens
+
+  Serial.println("LIS3DH test!");
+
+  if (! lis.begin(0x18)) {   // change this to 0x19 for alternative i2c address
+    Serial.println("Couldnt start");
+    while (1) yield();
+  }
+  Serial.println("LIS3DH found!");
+
+  // lis.setRange(LIS3DH_RANGE_4_G);   // 2, 4, 8 or 16 G!
+
+  Serial.print("Range = "); Serial.print(2 << lis.getRange());
+  Serial.println("G");
+
+  // lis.setDataRate(LIS3DH_DATARATE_50_HZ);
+  Serial.print("Data rate set to: ");
+  switch (lis.getDataRate()) {
+    case LIS3DH_DATARATE_1_HZ: Serial.println("1 Hz"); break;
+    case LIS3DH_DATARATE_10_HZ: Serial.println("10 Hz"); break;
+    case LIS3DH_DATARATE_25_HZ: Serial.println("25 Hz"); break;
+    case LIS3DH_DATARATE_50_HZ: Serial.println("50 Hz"); break;
+    case LIS3DH_DATARATE_100_HZ: Serial.println("100 Hz"); break;
+    case LIS3DH_DATARATE_200_HZ: Serial.println("200 Hz"); break;
+    case LIS3DH_DATARATE_400_HZ: Serial.println("400 Hz"); break;
+
+    case LIS3DH_DATARATE_POWERDOWN: Serial.println("Powered Down"); break;
+    case LIS3DH_DATARATE_LOWPOWER_5KHZ: Serial.println("5 Khz Low Power"); break;
+    case LIS3DH_DATARATE_LOWPOWER_1K6HZ: Serial.println("16 Khz Low Power"); break;
+  }
+  calibrate();
+}
+
+void loop() {
+  
+  int acc=0;
+  float totvect[10]={0};
+  float totave[10]={0};
+  float xaccl[10]={0};
+  float yaccl[10]={0};
+  float zaccl[10]={0};
+//  int sumx = 0;
+//  int sumy = 0;
+//  int sumz = 0;
+  for (int i=0;i<10;i++)
+  {
+    lis.read();
+    sensors_event_t event;
+    lis.getEvent(&event);
+    xaccl[i]=event.acceleration.x;
+    delay(1);
+    yaccl[i]=event.acceleration.y;
+    delay(1);
+    zaccl[i]=event.acceleration.z;
+    delay(1);
+    totvect[i] = sqrt(((xaccl[i]-xavg)* (xaccl[i]-xavg))+ ((yaccl[i] - yavg)*(yaccl[i] - yavg)) + ((zval[i] - zavg)*(zval[i] - zavg)));
+    if (i > 0){
+      totave[i] = (totvect[i] + totvect[i-1]) / 2 ;
+//      Serial.print("totave[i] ");
+//      Serial.println(totave[i]);
+//      Serial.print("flag ");
+//      Serial.println(flag);
+//      Serial.println();
+      delay(150);
+//      sumx = xaccl[i] + sumx;
+//      sumy = yaccl[i] + sumy;
+//      sumy = xaccl[i] + sumy;
+      //cal steps 
+      if (totave[i]>threshold && flag==0)
+      {
+         
+         flag=1;
+      }
+      else if (totave[i] > threshold && flag==1)
+      {
+          //do nothing 
+      }
+      if (totave[i] <threshold  && flag==1)
+      {
+        steps=steps+1;
+        flag=0;
+        break;
+      }
+    }
+
+  }
+//  xavg = sumx / 10.0;
+//  yavg = sumy / 10.0;
+//  zavg = sumz / 10.0;
+  Serial.print("steps=");
+  Serial.println(steps);
+  int reading = analogRead(A2);
+  usb_web.println(steps);
+}
+void calibrate()
+{
+  lis.read();
+  sensors_event_t event;
+  lis.getEvent(&event);
+  float sum = 0;
+  float sum1 = 0;
+  float sum2 = 0;
+  for (int i = 0; i < 10; i++) {
+    xval[i] = event.acceleration.x;
+    sum = xval[i] + sum;
+  }
+//  delay(100);
+  xavg = sum / 10.0;
+  Serial.println(xavg);
+  for (int j = 0; j < 10; j++)
+  {
+    yval[j] = event.acceleration.y;
+    sum1 = yval[j] + sum1;
+  }
+  yavg = sum1 / 10.0;
+  Serial.println(yavg);
+//  delay(100);
+  for (int q = 0; q < 10; q++)
+  {
+    zval[q] = event.acceleration.z;
+    sum2 = zval[q] + sum2;
+  }
+  zavg = sum2 / 10.0;
+//  delay(100);
+  Serial.println(zavg);
+  delay(1000);
+}
