@@ -43,7 +43,10 @@
      it was because the code's loop over the sampling started at index 0, which resulted in an average being taken with 0. 
      <br><br>
      After fixing this, I also changed the step counter to update once the flag was set back to 0 (the end of the step), since this made more intuitive sense 
-     and also incorporated a break in this condition so that the loops would be more responsive. Lastly, I incorporated the code from the p5 web demo. 
+     and also incorporated a break in this condition so that the loops would be more responsive. Lastly, I incorporated the code from the p5 web demo and tuned the threshold.
+     I noted that compared to waving the accelerometer around to get dummy readings, actual walking in a small space for demo purposes had much lower magnitue acceleration. After several
+     trial runs, I noted that a magnitude threshold between 1 and 1.5 worked well, ultimately settling on 1.3 for the below demo video. 
+     <br><br>
      Here is the 
      <span class="underline--magical" onclick="location.href='pedometer_sketch.txt';" style="cursor: pointer" >
       final result
