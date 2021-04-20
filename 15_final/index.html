@@ -39,10 +39,28 @@
 
    <img src="./unity-compile-warnings.png" style="height:700px; width:auto; object-fit: cover; align-content:centerd; display: block;margin-left: auto; margin-right: auto;" class="img-responsive margin"  alt="Sim circuit">
 
+   <br><br>
 
    Currently, I am attempting to work through those, and I believe it is because I was not using the same version of ML-Agents
    between the package repository and the Unity Package Manager. These files are all very large, so installation takes a while, but I will update further once this issue is resolved 
    and I can play the example simulation!
+   <br><br>
+
+   April 20, 2021:
+   <br><br>
+
+   After coming across
+   <span class="underline--magical" onclick="location.href='https://forum.unity.com/threads/unity-does-not-recognise-mlagents-namespace.947286/';" style="cursor: pointer" >
+    this discussion thread
+   </span>
+   I realized my error was due to the fact that I needed the ml-agent git repo and it's associated package.json files, which had to be added in Unity under packages manually.
+   <br><br>
+
+   The result, after removing the Tests folder, is that I can now run sample environments without issue!
+   <br><br>
+
+   <iframe src="https://giphy.com/embed/OtHHRXDHPOuZo9Mw57" style="align-content:centerd; display: block;margin-left: auto; margin-right: auto;" width="480" height="296" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/OtHHRXDHPOuZo9Mw57">via GIPHY</a></p>
+    
   </div>
 </div>
 
