@@ -366,7 +366,114 @@
   It seems that capture takes around 7 seconds, which is definitely not great. I will need to see if this can be improved or if I will need to embed an accelerometer on the puck or use a different camera (IPhone camera?) to get the data I need. 
    <br><br>
 
-  </div>
+  ---------------------------------------
+  <br><br>
+  May 13, 2021:
+  <br><br>
+  As my project stages coalesced, I saw the process come together as a series of constrained problems. The reason for this is that I (a) did not begin with a completely developed prototype plan and (b) ran into several unexpected setbacks. 
+  However, the situation lent itself well to creative prototyping and I found myself actively recalling what I learned particularly in the kinetic sculpture and Bluetooth communication weeks.
+  <br><br>
+  For ease of reading, the rest of the documentation will follow the repeated outline of: goal, constraints, solution, steps, resource summary. Rather than linking the resources in the text, since there are so many, I'll summarize and link them all at the bottom of the relevant section. 
+  <br><br>
+  Stage #1: Vision-Enabled Gameplay
+  <br><br>
+  Goal: Get visual input to one of my boards to facilitate motor commands that align the striker with the puck accurately and quickly. From my research of similar implementations of this project, CV is the standard for puck position detection, as alternatives are slower or give less reliable data.
+  <br><br>
+  Constraints: 
+  <br><br>
+  1. No ESP32 boards function with my version of macOS due to a recent change in how apple handles kernel extensions, of which SiLabs' USB to UART driver is one. This prevents me from connecting to the port where the board is located and using boards handily equipped 
+  with key WIFI and BLE communication protocols. My remaining options are Serial communication or to find some other board.
+  <br><br>
+  2. I only own enough IR Transistors and IR LEDs to create one (unreliable) depth sensor. Similarly, after discussiong alternatives to the CV solution with course staff, it seems like vision will definitely give the strongest results and should be the ideal to shoot for.
+  <br><br>
+  3. Since my hardward setup could change a lot, a low-calibration solution would be ideal.
+  <br><br>
+  Solution: Realizing I had an Arduino Nano 33 BLE Sense from a previous Harvard course (CS249: TinyML). Coupled with the ArduinoBLE library, I could 
+  <br><br>
+  Stage 1(a): Understand the ArduinoBLE library and how central/peripheral communication happens.
+
+
+  <br><br>
+  Stage 1(b): Get a Swift vision app working.
+  <br><br>
+  Stage 1(c): Combine the two previous sub-stages into one app that is a custom BLE central advertising to my Arduino peripheral. 
+  <br><br>
+  Stage 1(d): Migrate to version of BLE central creation in Swift that enables more flexibility in creating services and characteristics. 
+  <br><br>
+  Resources:
+  <br><br>
+
+  Stage 2: Assembling the playing field and strikers. 
+  <br><br>
+  Goal: Maximize speed that the strikers can achieve in x-y directions and minimize additional material purchases.
+  <br><br>
+  Constraints: 
+  <br><br>
+  1. At the beginning of the project process, not knowing exactly what I would need but having an inkling that linear stages would be involved, I asked course staff for materials to create 3 additional linear stages. 
+  <br><br>
+  2. The stepper motors we have work with 9V battery, so this power cap will limit the speed I can achieve.
+  <br><br>
+  For the above reasons, I would be battling friction and the weight limits that the motor can handle, especially since I want to set things up in an x-y plotter configuration. Stage 1 of the project also ended up consuming a lot of time and resources, even more so if I had not already 
+  had the Nano board from a previous class. I experimented with household items like curtain rods and other metal/plastic alternatives, but due to a lack of sufficient brackets to secure things and a desire to get to a working prototype, I chose to stick with the wood. However, compared to when 
+  I first worked with these stages, I knew a few tricks to reduce the resistance and maintain structural integrity.
+  <br><br>
+  Stage 2(a): Selecting an optimal size for the stages.
+  <img src="./start-assemble-stages.png" style="height:700px; width:auto; object-fit: cover; align-content:centerd; display: block;margin-left: auto; margin-right: auto;" class="img-responsive margin"  alt="Sim circuit">
+
+  <img src="./stages-assembled-together.png" style="height:700px; width:auto; object-fit: cover; align-content:centerd; display: block;margin-left: auto; margin-right: auto;" class="img-responsive margin"  alt="Sim circuit">
+
+  <br><br>
+  Stage 2(b): Getting the details right.
+  <img src="./assembled-striker.png" style="height:700px; width:auto; object-fit: cover; align-content:centerd; display: block;margin-left: auto; margin-right: auto;" class="img-responsive margin"  alt="Sim circuit">
+  <img src="./striker-on-stage.png" style="height:700px; width:auto; object-fit: cover; align-content:centerd; display: block;margin-left: auto; margin-right: auto;" class="img-responsive margin"  alt="Sim circuit">
+
+  <img src="./final-assembly.png" style="height:700px; width:auto; object-fit: cover; align-content:centerd; display: block;margin-left: auto; margin-right: auto;" class="img-responsive margin"  alt="Sim circuit">
+  <img src="./green-red-coding.png" style="height:700px; width:auto; object-fit: cover; align-content:centerd; display: block;margin-left: auto; margin-right: auto;" class="img-responsive margin"  alt="Sim circuit">
+
+  <br><br>
+  Stage 2(c): Optimizing stepper motor speed and acceleration.
+  <br><br>
+  Resources:
+  <br><br>
+
+  Stage 3: Dealing with Disaster
+  <br><br>
+  Unexpected Constraints:
+  <br><br>
+  1. The day before this project was due, I was busily making final adjustments to the programming, color-masking, BLE protocols, etc. in preparation for getting everything right for video filming. Alas, these last minute changes ended up spanning several hours (I tend to work in long sprints). Around the early evening, 
+  as I went to upload new BLE code, I discovered that my Nano was no longer connected to my laptop and was quite hot. Thinking this was a board package issue, I updated and discovered that the Arduino MBED boards had indeed had their old package deprecated. However, even after installing the new Nano-specific package and even doing 
+  a full reinstall of the Arduino IDE, my board would not connect. A little while later, the overheating had reached scalding levels, even with only a few minutes of connection and eventually even the LED that lights up on power connection went dark. This board was fried. 
+  <br><br>
+  <img src="./fried-nano.png" style="height:700px; width:auto; object-fit: cover; align-content:centerd; display: block;margin-left: auto; margin-right: auto;" class="img-responsive margin"  alt="Sim circuit">
+  <br><br>
+
+  Seeing as how this was the day before things were due and I had not done filming of the functioning BLE protocols since I needed to source a different phone to take video of my phone sending the data and also since I wanted to some simultaneous screen recordings. This was truly regrettable since so much of my time had been spent getting this working with minimal lag and making it look visually neat.
+  <br><br>
+  Goal: Showcase as much of the BLE work I did even if I couldn't demo it and somehow get video of functioning hardware ASAP for demo showcasing.
+  <br><br>
+  Solution: Since I had both halves of the process fleshed out and the only missing piece was a functioning BLE-enabled board, I decided instead of trying to debug a serial-based solution in a short time for the video demo, I would instead close the loop on both halves and demonstrate completion and replicability for anyone who has the hardware to connect them.
+  <br><br>
+  Stage 3(a): Gesture-controlled striker movement.
+  <img src="./overhead-wiring.png" style="height:700px; width:auto; object-fit: cover; align-content:centerd; display: block;margin-left: auto; margin-right: auto;" class="img-responsive margin"  alt="Sim circuit">
+
+  <br><br>
+  Stage 3(b): Wrap up BLE side for easy replicability with functioning hardware.
+  <br><br>
+
+  Final Demo Video:
+  <iframe width="760" height="515" src="https://www.youtube-nocookie.com/embed/73amvXIi6y4" style="align-content:centerd; display: block;margin-left: auto; margin-right: auto;" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+  <br><br>
+  Takeaways:
+  <br><br>
+  1. I really like Swift development! Something about the way the storyboards and code connect and the pieces necessary to communicate between code in various languages was very unique. 
+  <br><br>
+  2. Extending the BLE communication we learned in class to develop my own protocol and essentially replicate the BLE centrals we took for granted was a very informative and rewarding process, especially when you can see the accurate data streaming to your Arduino.
+  <br><br>
+  3. 
+  <br><br>
+
+</div>
 </div>
 
 </body>
