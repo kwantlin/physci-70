@@ -17,10 +17,15 @@
     </div>
   </div>
 <div class="container-fluid">
-  <h3 class="heading1">Final Project Process Page</h3> <br> 
+  <h3 class="heading1">Final Project Process/Showcase Page</h3> <br> 
   <div class="row content-2">
-  April 13, 2021:
+ 
 
+  The goal for my project was to create an version of an Air Hockey table with an automated opponent. This was interesting to me because I liked the potential of working with steppers, venturing into RL, and using computer vision. The exact configuration could go in many directions, and although 
+  that means I will be working with much uncertainty, it also means that I have a lot of room to experiment and prototype, which is a core reason I took this class! The details of my efforts on this ideal now follow.
+   <br><br>
+  April 13, 2021:
+  <br><br>
   This week, I focused on getting Unity ML Agents up and running. I followed this 
   <span class="underline--magical" onclick="location.href='https://github.com/Unity-Technologies/ml-agents/blob/main/docs/Installation.md#install-the-comunityml-agents-unity-package';" style="cursor: pointer" >
     installation documentation
@@ -375,11 +380,14 @@
   <br><br>
   For ease of reading, the rest of the documentation will follow the repeated outline of: goal, constraints, solution, steps, resource summary. Rather than linking the resources in the text, since there are so many, I'll summarize and link them all at the bottom of the relevant section. 
   <br><br>
-  Stage #1: Vision-Enabled Gameplay
+  First, here's my Demo Video:
+  <iframe width="760" height="515" src="https://www.youtube-nocookie.com/embed/73amvXIi6y4" style="align-content:centerd; display: block;margin-left: auto; margin-right: auto;" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
   <br><br>
-  Goal: Get visual input to one of my boards to facilitate motor commands that align the striker with the puck accurately and quickly. From my research of similar implementations of this project, CV is the standard for puck position detection, as alternatives are slower or give less reliable data.
+  <h3>Stage #1: Vision-Enabled Gameplay</h3>
   <br><br>
-  Constraints: 
+  <h3>Goal:</h3> Get visual input to one of my boards to facilitate motor commands that align the striker with the puck accurately and quickly. From my research of similar implementations of this project, CV is the standard for puck position detection, as alternatives are slower or give less reliable data.
+  <br><br>
+  <h3>Constraints: </h3>
   <br><br>
   1. No ESP32 boards function with my version of macOS due to a recent change in how apple handles kernel extensions, of which SiLabs' USB to UART driver is one. This prevents me from connecting to the port where the board is located and using boards handily equipped 
   with key WIFI and BLE communication protocols. My remaining options are Serial communication or to find some other board.
@@ -390,24 +398,224 @@
   <br><br>
   Solution: Realizing I had an Arduino Nano 33 BLE Sense from a previous Harvard course (CS249: TinyML). Coupled with the ArduinoBLE library, I could 
   <br><br>
-  Stage 1(a): Understand the ArduinoBLE library and how central/peripheral communication happens.
+  <h4>Stage 1(a):</h4> Understand the ArduinoBLE library and how central/peripheral communication happens.
+  <br><br>
+  Since I wanted to send data from my iPhone to the Arduino, and not the other way around, I learned that I needed to set my iPhone up to be a BLE Central and my Arduino to be a BLE Peripheral. Depending on the code, I also needed to be sure that I used the appriate "Write", "Read", etc. settings and 
+  created services and characteristics of those services that would transmit my data. I wanted to have a coordinate service that had the characteristics of striker and puck x and y coordinates (4 total characteristics), by the time my prototyping finished.
 
+  The below code allows me to create those services and is inspired by the "ButtonLED" Arduino BLE example.
+
+  <pre><code class="language-arduino">
+    #include <ArduinoBLE.h>
+      #include <AccelStepper.h>
+      
+      const int stepPin = 13;  // blue
+      const int dirPin = 12;   // orange
+      
+      BLEService ledService("b4250400-fb4b-4746-b2b0-93f0e61122c6"); // create service
+      
+      // create switch characteristic and allow remote device to read and write
+      BLEByteCharacteristic ballxCharacteristic("b4250401-fb4b-4746-b2b0-93f0e61122c6", BLERead | BLEWrite | BLEWriteWithoutResponse);
+      BLEByteCharacteristic ballyCharacteristic("b4250402-fb4b-4746-b2b0-93f0e61122c6", BLERead | BLEWrite | BLEWriteWithoutResponse);
+      BLEByteCharacteristic stickxCharacteristic("b4250403-fb4b-4746-b2b0-93f0e61122c6", BLERead | BLEWrite | BLEWriteWithoutResponse);
+      BLEByteCharacteristic stickyCharacteristic("b4250404-fb4b-4746-b2b0-93f0e61122c6", BLERead | BLEWrite | BLEWriteWithoutResponse);
+      
+      // create button characteristic and allow remote device to get notifications
+      //BLEByteCharacteristic buttonCharacteristic("19B10012-E8F2-537E-4F6C-D104768A1214", BLERead | BLENotify);
+      AccelStepper stepper(1, stepPin, dirPin); // initialise accelstepper for a two wire board
+      
+      void setup() {
+        Serial.begin(9600);
+        while (!Serial);
+      
+        pinMode(ledPin, OUTPUT); // use the LED as an output
+        pinMode(buttonPin, INPUT); // use button pin as an input
+      
+        // begin initialization
+        if (!BLE.begin()) {
+          Serial.println("starting BLE failed!");
+      
+          while (1);
+        }
+      
+        // set the local name peripheral advertises
+        BLE.setLocalName("ButtonLED");
+        // set the UUID for the service this peripheral advertises:
+        BLE.setAdvertisedService(ledService);
+      
+        // add the characteristics to the service
+        ledService.addCharacteristic(ballxCharacteristic);
+        ledService.addCharacteristic(ballyCharacteristic);
+        ledService.addCharacteristic(stickxCharacteristic);
+        ledService.addCharacteristic(stickyCharacteristic);
+      //  ledService.addCharacteristic(buttonCharacteristic);
+      
+        // add the service
+        BLE.addService(ledService);
+      
+        ballxCharacteristic.writeValue(0);
+        ballyCharacteristic.writeValue(0);
+        stickxCharacteristic.writeValue(0);
+        stickyCharacteristic.writeValue(0);
+      //  buttonCharacteristic.writeValue(0);
+      
+        // start advertising
+        BLE.advertise();
+      
+        Serial.println("Bluetooth device active, waiting for connections...");
+      }
+      
+      void loop() {
+        // poll for BLE events
+        BLE.poll();
+        int ballx;
+        int bally;
+        int stickx;
+        int sticky;
+      
+        if (ballxCharacteristic.written()) {
+          // update LED, either central has written to characteristic or button state has changed
+          if (ballxCharacteristic.value()) {
+            Serial.print("Ball x:");
+            Serial.println(ballxCharacteristic.value());
+            ballx = ballxCharacteristic.value();
+          } else {
+            Serial.println("Ball x OFF!!!");
+          }
+        }
+      
+         if (ballyCharacteristic.written()) {
+          // update LED, either central has written to characteristic or button state has changed
+          if (ballyCharacteristic.value()) {
+            Serial.print("Ball y:");
+            Serial.println(ballyCharacteristic.value());
+            bally = ballyCharacteristic.value();
+          } else {
+            Serial.println("Ball y OFF!!!");
+          }
+        }
+      
+         if (stickxCharacteristic.written()) {
+          // update LED, either central has written to characteristic or button state has changed
+          if (stickxCharacteristic.value()) {
+            Serial.print("Stick x:");
+            Serial.println(stickxCharacteristic.value());
+            stickx = stickxCharacteristic.value();
+          } else {
+            Serial.println("Stick x OFF!!!");
+          }
+        }
+      
+         if (stickyCharacteristic.written()) {
+          // update LED, either central has written to characteristic or button state has changed
+          if (stickyCharacteristic.value()) {
+            Serial.print("Stick y:");
+            Serial.println(stickyCharacteristic.value());
+            sticky = stickyCharacteristic.value();
+          } else {
+            Serial.println("Stick y OFF!!!");
+          }
+        }
+        if (ballx - stickx >10){
+          stepper.setMaxSpeed(4000);
+          stepper.setAcceleration(700);
+          stepper.run();
+        }
+        else if (ballx - stickx < -10) {
+          stepper.setMaxSpeed(-4000);
+          stepper.setAcceleration(700);
+          stepper.run();
+        }
+        else{
+          stepper.setMaxSpeed(0);
+          stepper.setAcceleration(700);
+          stepper.run();
+        }
+      }
+  </code></pre>
+  <br><br>
+
+  Note that this code has not been edited for Stepper functionality due to an issue that I will get into shortly, but this should work to illustrate the BLE functionality. 
 
   <br><br>
-  Stage 1(b): Get a Swift vision app working.
+  <h4>Stage 1(b):</h4> Get a Swift vision app working.
   <br><br>
-  Stage 1(c): Combine the two previous sub-stages into one app that is a custom BLE central advertising to my Arduino peripheral. 
+  Next, I needed to get a Swift vision app working that could take back camera data, mask for target objects based on color, draw bounding boxes, and determine coordinates of the centers of those bounding boxes.
+  I ended up starting with a LaneDetection Swift app that I found on GitHub, and slowly modified its OpenCV code until I got the functionality I wanted. It was very easy to follow the Medium tutorial, install the opencv2.framework, and 
+  make slight changes to C++ files to get the mask behavior, barring some C++ typing headaches. 
   <br><br>
-  Stage 1(d): Migrate to version of BLE central creation in Swift that enables more flexibility in creating services and characteristics. 
+
+  <img src="./app-mask.png" style="height:700px; width:auto; object-fit: cover; align-content:centerd; display: block;margin-left: auto; margin-right: auto;" class="img-responsive margin"  alt="Sim circuit">
+
   <br><br>
+  <h4>Stage 1(c):</h4> Combine the two previous sub-stages into one app that is a custom BLE central advertising to my Arduino peripheral. 
+  <br><br>
+  Now that I had the data I wanted an a functioning peripheral, I needed a way to transmit the data. BLE turned out to be a well-performing option, and using just one characteristic, I was able to create a simple service following a "HelloBluetooth" tutorial
+  I saw on GitHub to advertise to a single-characteristic service. 
   Resources:
   <br><br>
+  <h4>Stage 1(d):</h4> Migrate to version of BLE central creation in Swift that enables more flexibility in creating services and characteristics. 
+  <br><br>
+  Once I realized that I may want x,y coordinates for multiple targets, I started thinking about separating the service out to have multiple characteristics. The easy alternative would be to continuously have my peripheral poll central, but there's a chance that information 
+  could get lost along the way, although 95% of the time it would get the coordinates in the right order for the same image. The HelloBluetooth example was configured in a very simple way, and modifying it to have the characteristics I wanted would have been a huge headache. Instead,
+  I found another repo with a much more flexible BLE implementation, relying explicitly on CoreBluetooth, Apple's library for BLE implementations, rather than creating a simple custom framework. From dissecting this code, inserting my image capture code in the right place, and setting up my characteristics to match 
+  my Arduino code, I can transmit data from my iPhone central to an already active Arduino peripheral. 
+  The code for this was uploaded to 
+  <span class="underline--magical" onclick="location.href='https://drive.google.com/drive/folders/1879p6xsaIuBC_xLhnMlP_PQod_yQc5Q0?usp=sharing';" style="cursor: pointer" >
+    GDrive here.
+   </span>
+   <br><br>
 
-  Stage 2: Assembling the playing field and strikers. 
+  <h3>Resources:</h3>
+  <br><br>
+  1. <span class="underline--magical" onclick="location.href='https://medium.com/onfido-tech/building-a-simple-lane-detection-ios-app-using-opencv-4f70d8a6e6bc';" style="cursor: pointer" >
+    Simple CV with Swift
+   </span>
+   <br><br>
+  2. <span class="underline--magical" onclick="location.href='https://www.pyimagesearch.com/2015/09/14/ball-tracking-with-opencv/';" style="cursor: pointer" >
+    Ball tracking with OpenCV
+   </span>
+   <br><br>
+  3. <span class="underline--magical" onclick="location.href='https://answers.opencv.org/question/28133/calc-a-bounding-box-with-a-binarized-image/';" style="cursor: pointer" >
+    Bounding box on binarized image
+   </span>
+   <br><br>
+  4. <span class="underline--magical" onclick="location.href='https://stackoverflow.com/questions/9734821/how-to-find-the-center-coordinate-of-rectangle';" style="cursor: pointer" >
+    Center coordinate of rectangle bounding box
+   </span>
+   <br><br>
+  5. <span class="underline--magical" onclick="location.href='https://stackoverflow.com/questions/3669611/bounding-box-using-opencv';" style="cursor: pointer" >
+    More OpenCV bounding box
+   </span>
+   <br><br>
+   6. <span class="underline--magical" onclick="location.href='https://makersportal.com/blog/2020/4/17/ble-nano-arduino-control-iphone-blexar';" style="cursor: pointer" >
+    BLExAR 
+   </span>
+   <br><br>
+  7. <span class="underline--magical" onclick="location.href='https://www.novelbits.io/intro-ble-mobile-development-ios/';" style="cursor: pointer" >
+    Intro to mobile BLE development
+   </span>
+   <br><br>
+  8. <span class="underline--magical" onclick="location.href='https://medium.com/@nebsp/hello-bluetooth-a-simple-swift-app-for-communicating-with-an-arduino-bbf26e089999';" style="cursor: pointer" >
+    HelloBluetooth Swift app
+   </span>
+   <br><br>
+  9. <span class="underline--magical" onclick="location.href='https://www.freecodecamp.org/news/ultimate-how-to-bluetooth-swift-with-hardware-in-20-minutes/';" style="cursor: pointer" >
+    More advanced BLE app
+   </span>
+   <br><br>
+  10. <span class="underline--magical" onclick="location.href='https://github.com/sandeepmistry/arduino-BLEPeripheral/issues/123';" style="cursor: pointer" >
+    BLE peripheral variable access issues
+   </span>
+  
+  
+  <br><br>
+
+  <h3>Stage 2:</h3> Assembling the playing field and strikers. 
   <br><br>
   Goal: Maximize speed that the strikers can achieve in x-y directions and minimize additional material purchases.
   <br><br>
-  Constraints: 
+  <h3>Constraints: </h3>
   <br><br>
   1. At the beginning of the project process, not knowing exactly what I would need but having an inkling that linear stages would be involved, I asked course staff for materials to create 3 additional linear stages. 
   <br><br>
@@ -417,32 +625,54 @@
   had the Nano board from a previous class. I experimented with household items like curtain rods and other metal/plastic alternatives, but due to a lack of sufficient brackets to secure things and a desire to get to a working prototype, I chose to stick with the wood. However, compared to when 
   I first worked with these stages, I knew a few tricks to reduce the resistance and maintain structural integrity.
   <br><br>
-  Stage 2(a): Selecting an optimal size for the stages.
+  <h4>Stage 2(a):</h4> Selecting an optimal size for the stages.
+  <br><br>
+  I wanted to be sure to choose an optimal size for my stage, and since I had a 3ft by 2ft whiteboard, although a longer stage was riskier, I wanted to test out the capability. I ended up creating two stages, one normal (like the one from class) and one 
+  elongated with some lego-y extensions. The extended size would lay parallel to the goal end of the playing field and enable more range of motion and for the striker to interact reasonably with a ping pong ball. 
+  <br><br>
+
   <img src="./start-assemble-stages.png" style="height:700px; width:auto; object-fit: cover; align-content:centerd; display: block;margin-left: auto; margin-right: auto;" class="img-responsive margin"  alt="Sim circuit">
+  <br><br>
 
   <img src="./stages-assembled-together.png" style="height:700px; width:auto; object-fit: cover; align-content:centerd; display: block;margin-left: auto; margin-right: auto;" class="img-responsive margin"  alt="Sim circuit">
 
   <br><br>
-  Stage 2(b): Getting the details right.
+  <h4>Stage 2(b):</h4> Getting the details right.
+  <br><br>
+
+  Compared to the first time I built these stages, I knew now which direction to put screw heads, washers, etc. to minimize friction. I also kept the wood to a minimal amount, only using enough pieces to keep things 
+  balanced and functioning but with minimal friction. Lastly, I used some hot glue to lengthen the striker down the playing field.
+  <br><br>
   <img src="./assembled-striker.png" style="height:700px; width:auto; object-fit: cover; align-content:centerd; display: block;margin-left: auto; margin-right: auto;" class="img-responsive margin"  alt="Sim circuit">
+  <br><br>
+
   <img src="./striker-on-stage.png" style="height:700px; width:auto; object-fit: cover; align-content:centerd; display: block;margin-left: auto; margin-right: auto;" class="img-responsive margin"  alt="Sim circuit">
+  <br><br>
 
   <img src="./final-assembly.png" style="height:700px; width:auto; object-fit: cover; align-content:centerd; display: block;margin-left: auto; margin-right: auto;" class="img-responsive margin"  alt="Sim circuit">
+  <br><br>
+
   <img src="./green-red-coding.png" style="height:700px; width:auto; object-fit: cover; align-content:centerd; display: block;margin-left: auto; margin-right: auto;" class="img-responsive margin"  alt="Sim circuit">
 
   <br><br>
-  Stage 2(c): Optimizing stepper motor speed and acceleration.
+  <h4>Stage 2(c):</h4> Optimizing stepper motor speed and acceleration.
   <br><br>
-  Resources:
+  Lastly, with Nathan's help, I learned about full-stepping, which is the largest movement (quarter-turn) possible for our stepper per pulse, with half and quarter step halving the rotation successively. This allowed me to get the most speed possible, and since 
+  I wasn't too worried about precision, the fullstepping performed well at the maximum speeds I set for my motors. 
   <br><br>
+  <h3>Resources:</h3>
+  11. <span class="underline--magical" onclick="location.href='https://www.programmersought.com/article/7211773048/';" style="cursor: pointer" >
+    Full-step, half-step, quarter-step on motor
+   </span>
+   <br><br>
 
-  Stage 3: Dealing with Disaster
+   <h3>Stage 3: Dealing with Disaster</h3>
   <br><br>
-  Unexpected Constraints:
+  <h3>Unexpected Constraints:</h3>
   <br><br>
   1. The day before this project was due, I was busily making final adjustments to the programming, color-masking, BLE protocols, etc. in preparation for getting everything right for video filming. Alas, these last minute changes ended up spanning several hours (I tend to work in long sprints). Around the early evening, 
   as I went to upload new BLE code, I discovered that my Nano was no longer connected to my laptop and was quite hot. Thinking this was a board package issue, I updated and discovered that the Arduino MBED boards had indeed had their old package deprecated. However, even after installing the new Nano-specific package and even doing 
-  a full reinstall of the Arduino IDE, my board would not connect. A little while later, the overheating had reached scalding levels, even with only a few minutes of connection and eventually even the LED that lights up on power connection went dark. This board was fried. 
+  a full reinstall of the Arduino IDE, my board would not connect. A little while later, the overheating had reached scalding levels, even with only a few minutes of connection and eventually even the LED that lights up on power connection went dark. As you can see below, this board was fried.
   <br><br>
   <img src="./fried-nano.png" style="height:700px; width:auto; object-fit: cover; align-content:centerd; display: block;margin-left: auto; margin-right: auto;" class="img-responsive margin"  alt="Sim circuit">
   <br><br>
@@ -453,24 +683,211 @@
   <br><br>
   Solution: Since I had both halves of the process fleshed out and the only missing piece was a functioning BLE-enabled board, I decided instead of trying to debug a serial-based solution in a short time for the video demo, I would instead close the loop on both halves and demonstrate completion and replicability for anyone who has the hardware to connect them.
   <br><br>
-  Stage 3(a): Gesture-controlled striker movement.
+  <h4>Stage 3(a):</h4> Gesture-controlled striker movement.
   <img src="./overhead-wiring.png" style="height:700px; width:auto; object-fit: cover; align-content:centerd; display: block;margin-left: auto; margin-right: auto;" class="img-responsive margin"  alt="Sim circuit">
+  I wanted some simple but fun electronic input to control the striker, since I wouldn't be able to get full automation. I've seen tech online where brainwaves are used to control movement of drones, etc., and the closest I could get with what I have in the kit is head-gesture control of the striker.
+  I decided to simply have head tilts control direction and a forward nod indicate that the striker should move forward and hit the ball. 
+  To do this, I used the accelerometer, which I'd played with previously for step-counting, and the pull of gravity in the x,y,z directions to do simple gesture differentiation. 
+  <br><br>
+  Here is the final Arduino code for this:
 
   <br><br>
-  Stage 3(b): Wrap up BLE side for easy replicability with functioning hardware.
+  <pre><code class="language-arduino">
+    #include <Wire.h>
+      #include <SPI.h>
+      #include <Adafruit_LIS3DH.h>
+      #include <Adafruit_Sensor.h>
+      #include <AccelStepper.h>
+      
+      // Used for software SPI
+      #define LIS3DH_CLK 13
+      #define LIS3DH_MISO 12
+      #define LIS3DH_MOSI 11
+      // Used for hardware & software SPI
+      #define LIS3DH_CS 10
+      
+      // software SPI
+      Adafruit_LIS3DH lis = Adafruit_LIS3DH(LIS3DH_CS, LIS3DH_MOSI, LIS3DH_MISO, LIS3DH_CLK);
+      // hardware SPI
+      //Adafruit_LIS3DH lis = Adafruit_LIS3DH(LIS3DH_CS);
+      // I2C
+      //Adafruit_LIS3DH lis = Adafruit_LIS3DH();
+      
+      const int stepPin = 9;  // blue
+      const int dirPin = 8;   // orange
+      const int stepPin2 = 7;  // purple
+      const int dirPin2 = 6;   // yellow
+      
+      AccelStepper stepper(1, stepPin, dirPin); // initialise accelstepper for a two wire board
+      AccelStepper stepper2(1, stepPin2, dirPin2); // initialise accelstepper for a two wire board
+      
+      String lastmove = "still";
+      
+      void setup(void) {
+        Serial.begin(115200);
+        while (!Serial) delay(10);     // will pause Zero, Leonardo, etc until serial console opens
+      
+        Serial.println("LIS3DH test!");
+      
+        if (! lis.begin(0x18)) {   // change this to 0x19 for alternative i2c address
+          Serial.println("Couldnt start");
+          while (1) yield();
+        }
+        Serial.println("LIS3DH found!");
+      
+        // lis.setRange(LIS3DH_RANGE_4_G);   // 2, 4, 8 or 16 G!
+      
+        Serial.print("Range = "); Serial.print(2 << lis.getRange());
+        Serial.println("G");
+      
+        // lis.setDataRate(LIS3DH_DATARATE_50_HZ);
+        Serial.print("Data rate set to: ");
+        switch (lis.getDataRate()) {
+          case LIS3DH_DATARATE_1_HZ: Serial.println("1 Hz"); break;
+          case LIS3DH_DATARATE_10_HZ: Serial.println("10 Hz"); break;
+          case LIS3DH_DATARATE_25_HZ: Serial.println("25 Hz"); break;
+          case LIS3DH_DATARATE_50_HZ: Serial.println("50 Hz"); break;
+          case LIS3DH_DATARATE_100_HZ: Serial.println("100 Hz"); break;
+          case LIS3DH_DATARATE_200_HZ: Serial.println("200 Hz"); break;
+          case LIS3DH_DATARATE_400_HZ: Serial.println("400 Hz"); break;
+      
+          case LIS3DH_DATARATE_POWERDOWN: Serial.println("Powered Down"); break;
+          case LIS3DH_DATARATE_LOWPOWER_5KHZ: Serial.println("5 Khz Low Power"); break;
+          case LIS3DH_DATARATE_LOWPOWER_1K6HZ: Serial.println("16 Khz Low Power"); break;
+        }
+      
+      }
+      
+      void loop() {
+        sensors_event_t event;
+        lis.getEvent(&event);
+      
+        /* Display the results (acceleration is measured in m/s^2) */
+        Serial.print("\t\tX: "); Serial.print(event.acceleration.x);
+        Serial.print(" \tY: "); Serial.print(event.acceleration.y);
+        Serial.print(" \tZ: "); Serial.print(event.acceleration.z);
+        Serial.println(" m/s^2 ");
+      
+        Serial.println();
+      
+        float x = event.acceleration.x;
+        float y = event.acceleration.y;
+        float z = event.acceleration.z;
+      
+        if (abs(x) < 3.0 and abs(y) < 3.0 and abs(z + 9.8) < 3.0){ // still
+          if (lastmove != "still"){
+            delay(100);
+      
+            stepper.setMaxSpeed(0);
+            stepper.setAcceleration(500);
+            stepper2.setMaxSpeed(0);
+            stepper2.setAcceleration(500);
+            Serial.println("change stepper!");
+            lastmove = "still";
+          }
+          Serial.println("still");
+      
+        }
+        else if (x >= 3.0 and abs(y) < 3.0 ){ // left
+          if (lastmove != "left"){
+            delay(100);
+            stepper.moveTo(30000);
+            stepper.setMaxSpeed(900);
+            stepper.setAcceleration(500);
+            stepper2.setMaxSpeed(0);
+            stepper2.setAcceleration(500);
+            lastmove = "left";
+            Serial.println("change stepper!");
+             
+          }
+          Serial.println("left");
+          
+        }
+        else if(x <= -3.0 and abs(y) < 3.0 ){ // right
+          if (lastmove != "right"){
+            delay(100);
+            stepper.moveTo(-30000);
+            stepper.setMaxSpeed(800);
+            stepper.setAcceleration(500); 
+            stepper2.setMaxSpeed(0);
+            stepper2.setAcceleration(500);
+          lastmove = "right";
+            Serial.println("change stepper!");
+           
+          }
+      
+          Serial.println("right");
+        }
+        else if(abs(x) < 3.0 and y >= 6.0){ // hit
+           if (lastmove != "hit"){
+            delay(100);
+            stepper.setMaxSpeed(0);
+            stepper.setAcceleration(500);
+      
+            stepper2.setMaxSpeed(800);
+            stepper2.setAcceleration(2000);
+            stepper2.runToNewPosition(-80); 
+            stepper2.runToNewPosition(80); 
+      
+          lastmove = "hit";
+            Serial.println("change stepper!");
+           
+          }
+      
+          Serial.println("hit");
+        }
+      
+        else{ // otherwise still
+          if (lastmove != "still"){
+            stepper.setMaxSpeed(0);
+            stepper.setAcceleration(500);
+            stepper2.setMaxSpeed(0);
+            stepper2.setAcceleration(500);
+            Serial.println("change stepper!");
+          }
+          Serial.println("otherwise still");
+          lastmove = "still";
+        }
+        stepper.run();
+        stepper2.run();
+      
+      }
+  </code></pre>
   <br><br>
-
-  Final Demo Video:
-  <iframe width="760" height="515" src="https://www.youtube-nocookie.com/embed/73amvXIi6y4" style="align-content:centerd; display: block;margin-left: auto; margin-right: auto;" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
+  <h4>Stage 3(b):</h4> Wrap up BLE side for easy replicability with functioning hardware.
   <br><br>
-  Takeaways:
+  Not too much for this step, other than cleaning up code and sending it to GDrive link from above. I would encourage anyone interested in ensuring its replicability to feel free to try it on an iOS device with an Arduino BLE-enabled board to see that the protocols are working correctly!
+  <br><br>
+  <h3>Resources:</h3>
+
+  12. <span class="underline--magical" onclick="location.href='https://github.com/akshatak12/BLEPeripheral';" style="cursor: pointer" >
+    BLE Peripheral app
+   </span>
+   <br><br>
+  13. <span class="underline--magical" onclick="location.href='https://blog.usejournal.com/creating-ios-application-as-bluetooth-peripheral-669404230232';" style="cursor: pointer" >
+    More BLE peripheral - tutorial
+   </span>
+   <br><br>
+  14. <span class="underline--magical" onclick="location.href='https://github.com/armadsen/ORSSerialPort';" style="cursor: pointer" >
+  Serial Port library for Swift
+  </span>
+  <br><br>
+  15. <span class="underline--magical" onclick="location.href='https://blog.arduino.cc/2019/08/26/heres-a-low-cost-air-hockey-table-you-can-make-yourself/';" style="cursor: pointer" >
+  Low cost air hockey table - tricks for making
+  </span>
+  <br><br>
+  16. <span class="underline--magical" onclick="location.href='https://github.com/espressif/arduino-esp32/issues/4408';" style="cursor: pointer" >
+    ESP32 issues
+    </span>
+    <br><br>
+  <br><br>
+  <h3>Takeaways:</h3>
   <br><br>
   1. I really like Swift development! Something about the way the storyboards and code connect and the pieces necessary to communicate between code in various languages was very unique. 
   <br><br>
   2. Extending the BLE communication we learned in class to develop my own protocol and essentially replicate the BLE centrals we took for granted was a very informative and rewarding process, especially when you can see the accurate data streaming to your Arduino.
   <br><br>
-  3. 
+  3. Some constraints can inspire unique and creative solutions to problems, and though things suddenly not working was definitely frustrating in the moment, now looking back I'm glad that it forced me to be out of my comfort zone and find my project's solutions.
   <br><br>
 
 </div>
