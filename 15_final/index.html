@@ -21,11 +21,20 @@
   <div class="row content-2">
  
 
+  <h3>Motivation</h3>
+
   The goal for my project was to create an version of an Air Hockey table with an automated opponent. This was interesting to me because I liked the potential of working with steppers, venturing into RL, and using computer vision. The exact configuration could go in many directions, and although 
   that means I will be working with much uncertainty, it also means that I have a lot of room to experiment and prototype, which is a core reason I took this class! The details of my efforts on this ideal now follow.
-   <br><br>
-  April 13, 2021:
   <br><br>
+  My ideal end result will include camera-enabled detection of stick and puck locations to send motor commands, with stepper motors controlling the x-y position of the stick. 
+  <br><br>
+  First, here's my Demo Video:
+  <iframe width="760" height="515" src="https://www.youtube-nocookie.com/embed/73amvXIi6y4" style="align-content:centerd; display: block;margin-left: auto; margin-right: auto;" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  <br><br>
+  And also a demo of just the Bluetooth side. The reasons for this being separate will become clear shortly. 
+  <iframe width="760" height="515" src="https://www.youtube-nocookie.com/embed/hFeYXvWmLqg" style="align-content:centerd; display: block;margin-left: auto; margin-right: auto;" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  <br><br>
+  <h2>April 13, 2021:</h2>
   This week, I focused on getting Unity ML Agents up and running. I followed this 
   <span class="underline--magical" onclick="location.href='https://github.com/Unity-Technologies/ml-agents/blob/main/docs/Installation.md#install-the-comunityml-agents-unity-package';" style="cursor: pointer" >
     installation documentation
@@ -51,9 +60,7 @@
    and I can play the example simulation!
    <br><br>
 
-   April 20, 2021:
-   <br><br>
-
+   <h2>April 20, 2021:</h2>
    After coming across
    <span class="underline--magical" onclick="location.href='https://forum.unity.com/threads/unity-does-not-recognise-mlagents-namespace.947286/';" style="cursor: pointer" >
     this discussion thread
@@ -74,10 +81,8 @@
    up and running, although I will need to replace the objects most likely. For exapmle, I will likely be using a ball rather than a puck since I likely won't have a super 
    slick surface to work with. I will also need to considerthe real world effects of friction as well as the force/speed that I can achieve with the stepper motor carriages.
    If necessary, I might need to change to an xy-plotter design for more fluid motion, although I will need to weigh down the "hockey sticks" somehow.
-  
-   April 27, 2021:
    <br><br>
-   
+   <h2>April 27, 2021:</h2>
    This week, I identified the major pieces of my project moving forward to create a comprehensive plan of action for my air hockey project. Here are the main points:
    <br><br>
 
@@ -369,26 +374,18 @@
   <img src="./capture_result.png" style="height:200px; width:auto; object-fit: cover; align-content:centerd; display: block;margin-left: auto; margin-right: auto;" class="img-responsive margin"  alt="Sim circuit">
 
   It seems that capture takes around 7 seconds, which is definitely not great. I will need to see if this can be improved or if I will need to embed an accelerometer on the puck or use a different camera (IPhone camera?) to get the data I need. 
-   <br><br>
 
-  ---------------------------------------
   <br><br>
-  May 13, 2021:
-  <br><br>
+  <h2>May 13, 2021:</h2>
   As my project stages coalesced, I saw the process come together as a series of constrained problems. The reason for this is that I (a) did not begin with a completely developed prototype plan and (b) ran into several unexpected setbacks. 
   However, the situation lent itself well to creative prototyping and I found myself actively recalling what I learned particularly in the kinetic sculpture and Bluetooth communication weeks.
   <br><br>
   For ease of reading, the rest of the documentation will follow the repeated outline of: goal, constraints, solution, steps, resource summary. Rather than linking the resources in the text, since there are so many, I'll summarize and link them all at the bottom of the relevant section. 
   <br><br>
-  First, here's my Demo Video:
-  <iframe width="760" height="515" src="https://www.youtube-nocookie.com/embed/73amvXIi6y4" style="align-content:centerd; display: block;margin-left: auto; margin-right: auto;" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-  <br><br>
+  
   <h3>Stage #1: Vision-Enabled Gameplay</h3>
-  <br><br>
   <h3>Goal:</h3> Get visual input to one of my boards to facilitate motor commands that align the striker with the puck accurately and quickly. From my research of similar implementations of this project, CV is the standard for puck position detection, as alternatives are slower or give less reliable data.
-  <br><br>
   <h3>Constraints: </h3>
-  <br><br>
   1. No ESP32 boards function with my version of macOS due to a recent change in how apple handles kernel extensions, of which SiLabs' USB to UART driver is one. This prevents me from connecting to the port where the board is located and using boards handily equipped 
   with key WIFI and BLE communication protocols. My remaining options are Serial communication or to find some other board.
   <br><br>
@@ -567,7 +564,6 @@
    <br><br>
 
   <h3>Resources:</h3>
-  <br><br>
   1. <span class="underline--magical" onclick="location.href='https://medium.com/onfido-tech/building-a-simple-lane-detection-ios-app-using-opencv-4f70d8a6e6bc';" style="cursor: pointer" >
     Simple CV with Swift
    </span>
@@ -612,11 +608,9 @@
   <br><br>
 
   <h3>Stage 2:</h3> Assembling the playing field and strikers. 
-  <br><br>
-  Goal: Maximize speed that the strikers can achieve in x-y directions and minimize additional material purchases.
-  <br><br>
+  <h3>Goal:</h3> Maximize speed that the strikers can achieve in x-y directions and minimize additional material purchases.
+
   <h3>Constraints: </h3>
-  <br><br>
   1. At the beginning of the project process, not knowing exactly what I would need but having an inkling that linear stages would be involved, I asked course staff for materials to create 3 additional linear stages. 
   <br><br>
   2. The stepper motors we have work with 9V battery, so this power cap will limit the speed I can achieve.
@@ -667,9 +661,7 @@
    <br><br>
 
    <h3>Stage 3: Dealing with Disaster</h3>
-  <br><br>
   <h3>Unexpected Constraints:</h3>
-  <br><br>
   1. The day before this project was due, I was busily making final adjustments to the programming, color-masking, BLE protocols, etc. in preparation for getting everything right for video filming. Alas, these last minute changes ended up spanning several hours (I tend to work in long sprints). Around the early evening, 
   as I went to upload new BLE code, I discovered that my Nano was no longer connected to my laptop and was quite hot. Thinking this was a board package issue, I updated and discovered that the Arduino MBED boards had indeed had their old package deprecated. However, even after installing the new Nano-specific package and even doing 
   a full reinstall of the Arduino IDE, my board would not connect. A little while later, the overheating had reached scalding levels, even with only a few minutes of connection and eventually even the LED that lights up on power connection went dark. As you can see below, this board was fried.
@@ -679,9 +671,9 @@
 
   Seeing as how this was the day before things were due and I had not done filming of the functioning BLE protocols since I needed to source a different phone to take video of my phone sending the data and also since I wanted to some simultaneous screen recordings. This was truly regrettable since so much of my time had been spent getting this working with minimal lag and making it look visually neat.
   <br><br>
-  Goal: Showcase as much of the BLE work I did even if I couldn't demo it and somehow get video of functioning hardware ASAP for demo showcasing.
+  <h3>Goal:</h3> Showcase as much of the BLE work I did even if I couldn't demo it and somehow get video of functioning hardware ASAP for demo showcasing.
   <br><br>
-  Solution: Since I had both halves of the process fleshed out and the only missing piece was a functioning BLE-enabled board, I decided instead of trying to debug a serial-based solution in a short time for the video demo, I would instead close the loop on both halves and demonstrate completion and replicability for anyone who has the hardware to connect them.
+  <h3>Solution:</h3> Since I had both halves of the process fleshed out and the only missing piece was a functioning BLE-enabled board, I decided instead of trying to debug a serial-based solution in a short time for the video demo, I would instead close the loop on both halves and demonstrate completion and replicability for anyone who has the hardware to connect them.
   <br><br>
   <h4>Stage 3(a):</h4> Gesture-controlled striker movement.
   <img src="./overhead-wiring.png" style="height:700px; width:auto; object-fit: cover; align-content:centerd; display: block;margin-left: auto; margin-right: auto;" class="img-responsive margin"  alt="Sim circuit">
@@ -856,7 +848,8 @@
   <br><br>
   <h4>Stage 3(b):</h4> Wrap up BLE side for easy replicability with functioning hardware.
   <br><br>
-  Not too much for this step, other than cleaning up code and sending it to GDrive link from above. I would encourage anyone interested in ensuring its replicability to feel free to try it on an iOS device with an Arduino BLE-enabled board to see that the protocols are working correctly!
+  Not too much for this step, other than cleaning up code and sending it to GDrive link from above. On May 15, I received the new board (unsoldered unfortunately, an oversight on my part during a hasty purchasing). 
+  From this purchase, I was able to get the Bluetooth exclusive demo video from the beginning of this page. 
   <br><br>
   <h3>Resources:</h3>
 
@@ -911,7 +904,6 @@
  
     <br><br>
   <h3>Takeaways:</h3>
-  <br><br>
   1. I really like Swift development! Something about the way the storyboards and code connect and the pieces necessary to communicate between code in various languages was very unique. 
   <br><br>
   2. Extending the BLE communication we learned in class to develop my own protocol and essentially replicate the BLE centrals we took for granted was a very informative and rewarding process, especially when you can see the accurate data streaming to your Arduino.
@@ -922,6 +914,10 @@
   what I have is a demonstration of quick fabrication turnaround: I thought up, coded, tested, etc. my Plan B, filmed and edited, all in one night, something I could never have done at the start of class or even when I first picked up the acceleromenter.
   <br><br>
 
+  <h3>May 16, 2021</h3>
+  Despite the lack of soldered headers, I was finally able to twist an LED around the board tightly enough to get the blink sketch to work. Tomorrow, I will test to see if the connection is consistent enough for motor commands.
+  <br><br>
+  <div style="width:260px;max-width:100%;"><div style="height:0;padding-bottom:177.69%;position:relative;"><iframe width="260" height="462" style="position:absolute;top:0;left:0;width:100%;height:100%;" frameBorder="0" src="https://imgflip.com/embed/59t199"></iframe></div><p><a href="https://imgflip.com/gif/59t199">via Imgflip</a></p></div>
 </div>
 </div>
 
